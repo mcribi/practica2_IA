@@ -185,6 +185,26 @@ class ComportamientoJugador : public Comportamiento {
   public:
     ComportamientoJugador(unsigned int size) : Comportamiento(size) { //para nivel 4
       // Inicializar Variables de Estado
+      hayPlan=false;
+      primer_mov=true;
+      segundo_mov=false;
+      this->size=size;
+      last_action=actIDLE;
+      vuelve_a_visualizar=false;
+      voy_sonambulo=false;
+      he_recargado=false;
+      en_recarga=false;
+      ciclos=2999;
+      ultima_recarga=0;
+      no_encuentro_bateria=true;
+      ya_he_encontrado_recarga=false;
+      //Sabemos que hay 3x3 de precipicio
+      for (int i=0; i<size; i++){
+        for (int j=0; j<size; j++){
+          if (i<3 or j<3 or j>(size-4) or i>(size-4))
+            mapaResultado[i][j]='P';
+        }
+      }
     }
     ComportamientoJugador(std::vector< std::vector< unsigned char> > mapaR) : Comportamiento(mapaR) { //para nivel 0,1,2,3
       // Inicializar Variables de Estado
@@ -204,6 +224,18 @@ class ComportamientoJugador : public Comportamiento {
     //stateN0 c_state;
     stateN3 c_state;
     ubicacion goal;
+    bool primer_mov;
+    bool segundo_mov;
+    int size;
+    bool voy_sonambulo;
+    Action last_action;
+    bool vuelve_a_visualizar;
+    bool he_recargado;
+    bool en_recarga;
+    int ciclos;
+    int ultima_recarga;
+    bool no_encuentro_bateria;
+    bool ya_he_encontrado_recarga;
 
 
 
@@ -218,6 +250,7 @@ stateN0 apply(const Action &a, const stateN0 &st, const vector<vector<unsigned c
 stateN1 apply(const Action &a, const stateN1 &st, const vector<vector<unsigned char>> &mapa);
 stateN2 apply(const Action &a, const stateN2 &st, const vector<vector<unsigned char>> &mapa);
 stateN3 apply(const Action &a, const stateN3 &st, const vector<vector<unsigned char>> &mapa);
+stateN3 applyN4(const Action &a, const stateN3 &st, const vector<vector<unsigned char>> &mapa);
 //bool Find(const stateN0 &item, const list<stateN0> &lista);
 //bool Find(const stateN0 &item, const list<nodeN0> &lista);
 void AnularMatriz(vector<vector<unsigned char>> &matriz);
@@ -236,4 +269,14 @@ void actualizarObjetos(nodeN2 &current_node, const vector<vector<unsigned char>>
 void actualizarObjetosJugador(nodeN3 &current_node, const vector<vector<unsigned char>> &mapa);
 void actualizarObjetosSonambulo(nodeN3 &current_node, const vector<vector<unsigned char>> &mapa );
 bool a_estrella_chebychev(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);
+
+
+//Para el nivel 4
+void PonerTerrenoEnMatriz (const stateN3 &st, vector<vector<unsigned char>>&matriz, Sensores sensores);
+bool costeUniforme(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);bool CasillaTransitable(const ubicacion &x, const vector<vector<unsigned char>> &mapa);
+//bool CasillaTransitableN4(const ubicacion &x, const vector<vector<unsigned char>> &mapa); 
+bool nivel4(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);
+ubicacion buscarEnMatriz (vector<vector<unsigned char>>&matriz, unsigned char letra, const ubicacion &jugador);
+bool nivel4Sonambulo(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);
+bool veoSonambuloN4(const ubicacion &jugador, const ubicacion &sonambulo);
 #endif
