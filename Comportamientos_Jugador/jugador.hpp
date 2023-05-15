@@ -186,6 +186,8 @@ class ComportamientoJugador : public Comportamiento {
     ComportamientoJugador(unsigned int size) : Comportamiento(size) { //para nivel 4
       // Inicializar Variables de Estado
       hayPlan=false;
+      hayPlan_jug=false;
+      hayPlan_son=false;
       primer_mov=true;
       segundo_mov=false;
       this->size=size;
@@ -197,6 +199,8 @@ class ComportamientoJugador : public Comportamiento {
       ciclos=2999;
       ultima_recarga=0;
       no_encuentro_bateria=true;
+      sonambulo_sin_sol=false;
+      sonambuloInalcanzable=false;
       ya_he_encontrado_recarga=false;
       //Sabemos que hay 3x3 de precipicio
       for (int i=0; i<size; i++){
@@ -220,9 +224,16 @@ class ComportamientoJugador : public Comportamiento {
   private:
     // Declarar Variables de Estado
     list<Action> plan;  //Almacena el plan en ejecución
+    list<Action> plan_son;  //Almacena el plan en ejecución
+    list<Action> plan_jug;  //Almacena el plan en ejecución
     bool hayPlan; //Si verdad infica que se está siguiendo un plan
+    bool hayPlan_jug;
+    bool  hayPlan_son;
     //stateN0 c_state;
+    bool sonambulo_sin_sol;
     stateN3 c_state;
+    ubicacion goal_jug;
+    ubicacion goal_son;
     ubicacion goal;
     bool primer_mov;
     bool segundo_mov;
@@ -235,6 +246,7 @@ class ComportamientoJugador : public Comportamiento {
     int ciclos;
     int ultima_recarga;
     bool no_encuentro_bateria;
+    bool sonambuloInalcanzable;
     bool ya_he_encontrado_recarga;
 
 
@@ -275,8 +287,14 @@ bool a_estrella_chebychev(const stateN3 &inicio, const ubicacion &final, list<Ac
 void PonerTerrenoEnMatriz (const stateN3 &st, vector<vector<unsigned char>>&matriz, Sensores sensores);
 bool costeUniforme(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);bool CasillaTransitable(const ubicacion &x, const vector<vector<unsigned char>> &mapa);
 //bool CasillaTransitableN4(const ubicacion &x, const vector<vector<unsigned char>> &mapa); 
+bool nivel4Jug(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);
+stateN3 apply_son(const Action &a, const stateN3 &st, const vector<vector<unsigned char>> &mapa);
 bool nivel4(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);
 ubicacion buscarEnMatriz (vector<vector<unsigned char>>&matriz, unsigned char letra, const ubicacion &jugador);
 bool nivel4Sonambulo(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);
 bool veoSonambuloN4(const ubicacion &jugador, const ubicacion &sonambulo);
+bool libreDelanteSonambulo (const stateN3 &st, vector<vector<unsigned char>>&matriz, Sensores sensores);
+char casillaDelanteSonambulo (const stateN3 &st, vector<unsigned char>&terreno);
+int mirar_terreno(char casilla, const vector<unsigned char> &terreno);
+bool a_estrella_sonambulo(const stateN3 &inicio, const ubicacion &final, list<Action> & plan, const vector<vector<unsigned char>> &mapa);
 #endif
